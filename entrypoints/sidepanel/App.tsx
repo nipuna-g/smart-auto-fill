@@ -16,8 +16,10 @@ import {
 import { RadioCardItem, RadioCardLabel, RadioCardRoot } from "@/components/radio-card";
 import { Field } from "@/components/field";
 import { ProgressBar } from "@/components/progress";
-import { MdAdd, MdCheckCircle, MdDelete } from "react-icons/md";
+import { MdAdd, MdCheckCircle, MdDelete, MdDeleteOutline, MdInfo } from "react-icons/md";
 import { storage } from "wxt/storage";
+import { UserInfoPrompt } from "./userInfoPrompt/UserInfoPrompt";
+import { Tooltip } from "@/components/tooltip";
 
 const SYSTEM_PROMPT = `You are a helpful assistant identifies form fields, and fills them based on the user information provided.
 You will be given a string of HTML, and a JSON object with user information.
@@ -124,6 +126,7 @@ function App() {
       <Stack height="100vh" p={4} paddingBlock={8} justifyContent="space-between">
         <Stack>
           <UserProfile selectedUserKey={selectedUserKey} setSelectedUserKey={setSelectedUserKey} />
+          {selectedUserKey && <UserInfoPrompt selectedUserKey={selectedUserKey} />}
         </Stack>
 
         <Stack gap="4">
@@ -227,7 +230,14 @@ function UserProfile({
           <RadioCardItem
             width="full"
             indicatorPlacement="start"
-            label={user.name}
+            label={
+              <HStack>
+                <Text>{user.name}</Text>
+                <Tooltip content={JSON.stringify(user)}>
+                  <MdInfo />
+                </Tooltip>
+              </HStack>
+            }
             description={user.email}
             key={user.key}
             value={user.key}
@@ -252,7 +262,7 @@ function UserProfile({
             storage.setItem(`local:userInfo`, newUserInfo);
           }}
         >
-          <MdDelete />
+          <MdDeleteOutline />
           Remove User
         </Button>
       </HStack>
